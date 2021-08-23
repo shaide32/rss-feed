@@ -1,41 +1,31 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <input v-model="user" placeholder="Enter github user id" />
-    <table>
-      <thead>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Url</th>
-      </thead>
-      <tbody>
-        <tr v-for="repo in data" :key="repo.id">
-          <td> {{repo.name}}</td>
-          <td> {{repo.description}}</td>
-          <td> {{repo.html_url}}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="feed">
+    <div class="feed-title-container">
+      <ul>
+        <li v-for="(feed, index) in feedsData" :key="index" :data-index="index">{{feed.title}}</li>
+      </ul>
+    </div>
+
+    <div class="feed-article-list-container">
+      <ul>
+        <li v-for="(article, index) in selectedFeedArticles" :data-index="index" :key="index">{{article.title}}</li>
+      </ul>
+    </div>
+    
+    <div class="feed-article-container">
+      <h2>{{ selectedArticle.title }} </h2>
+      <span v-html="selectedArticle['content:encoded']"> </span>
+    </div>
   </div>
 </template>
 
 <script>
 
 import { ref } from "vue";
-import { debounce } from "lodash";
 import * as RSSParser from "rss-parser";
+import { feedUrls } from '../constants';
 
 const parser = new RSSParser();
-
-(async () => {
-  let feed = await parser.parseURL('https://today.uic.edu/feed');
-  console.log(feed.title);
-
-  feed.items.forEach(item => {
-    console.log(item.title + ':' + item.link)
-  });
-
-})();
 
 export default {
   name: 'HelloWorld',
@@ -55,41 +45,78 @@ export default {
     }
   },
 
-  created() {
-    this.debouncedFetchData = debounce(this.fetchData, 500)
-  },
 
   data() {
     return {
-      user: 'shai1436'
+      user: 'shai1436',
+      feedUrls,
+      feedsData: [],
+      selectedFeedIndex: 0,
+      selectedFeedArticleIndex: 0
     }
   },
 
-  watch: {
-    user(newUser, oldUser){
-      console.log(newUser, oldUser);
-      if(newUser !== oldUser) {
-        this.debouncedFetchData(newUser);
-      }
+  computed: {
+    selectedFeedArticles() {
+      return this.feedsData[this.selectedFeedIndex]?.items || [];
+    },
+
+    selectedArticle() {
+      return this.selectedFeedArticles[this.selectedFeedArticleIndex] || {};
     }
+  },
+  
+  watch: {
+    // user(newUser, oldUser){
+    //   console.log(newUser, oldUser);
+    //   if(newUser !== oldUser) {
+    //     this.debouncedFetchData(newUser);
+    //   }
+    // }
   },
 
   mounted() {
-    this.fetchData(this.user);
+    this.fetchArticles();
   },
 
   methods: {
-    async fetchData(user = "shai1436") {
-      const url = `https://api.github.com/users/${user}/repos`;
-      const response = await fetch(url);
-      this.data = await response.json();
+    async fetchArticles() {
+      try {
+        this.feedUrls.forEach(async (feedUrl) => {
+          const url = feedUrl;
+          let feed = await parser.parseURL(url);
+          console.log(feed);
+          this.feedsData.push(feed);
+        })
+        
+      } catch(e) {
+        console.error("ERROR:", e);
+      }
+      
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+
+.feed {
+  display: flex;
+  flex-direction: row;
+}
+
+.feed-title-container {
+  flex: 0 0 20%;
+}
+
+.feed-article-list-container {
+  flex: 0 0 30%;
+}
+
+.feed-article-container {
+  flex: 1 1 50%;
+}
 
 input {
     width: 30%;
@@ -112,14 +139,20 @@ td, th {
 h3 {
   margin: 40px 0 0;
 }
+
 ul {
+  display: flex;
+  flex-direction: column;
   list-style-type: none;
   padding: 0;
+  text-align: left;
 }
+
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 5px 10px;
 }
+
 a {
   color: #42b983;
 }
