@@ -30,6 +30,7 @@
     <div class="feed-article-container">
       <h2>{{ selectedArticle.title }} </h2>
       <span v-html="selectedArticle['content:encoded']"> </span>
+      <span v-html="selectedArticle['content']"> </span>
     </div>
   </div>
 </template>
@@ -179,7 +180,7 @@ ul {
   text-align: left;
 }
 
-li:hover {
+.feed-article-list-container li:hover, .feed-title-container li:hover {
   background: lightgray;
 }
 
