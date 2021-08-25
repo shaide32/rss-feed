@@ -2,13 +2,28 @@
   <div class="feed">
     <div class="feed-title-container">
       <ul>
-        <li v-for="(feed, index) in feedsData" :key="index" :data-index="index">{{feed.title}}</li>
+        <li
+          v-for="(feed, index) in feedsData"
+          @click="selectedFeedIndex = index"
+          :key="index" :data-index="index"
+          :class="{ selected: selectedFeedIndex == index }"
+        >
+          {{feed.title}}
+        </li>
       </ul>
     </div>
 
     <div class="feed-article-list-container">
       <ul>
-        <li v-for="(article, index) in selectedFeedArticles" :data-index="index" :key="index">{{article.title}}</li>
+        <li
+          v-for="(article, index) in selectedFeedArticles"
+          @click="selectedFeedArticleIndex = index" 
+          :data-index="index"
+          :key="index"
+          :class="{ selected: selectedFeedArticleIndex == index }"
+        >
+          {{article.title}}
+        </li>
       </ul>
     </div>
     
@@ -107,15 +122,31 @@ export default {
 }
 
 .feed-title-container {
-  flex: 0 0 20%;
+  flex: 0 0 15%;
+  border-right: 0px solid grey;
+  padding: 0 5px;
+  -webkit-box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
+  -moz-box-shadow: 4px 0px 7px -1px rgba(0,0,0,0.44);
+  box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
+  overflow: scroll;
 }
 
 .feed-article-list-container {
   flex: 0 0 30%;
+  border-right: 0px solid grey;
+  padding-right: 5px;
+  -webkit-box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
+  -moz-box-shadow: 4px 0px 7px -1px rgba(0,0,0,0.44);
+  box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
+  overflow: scroll;
+  padding: 0 10px;
 }
 
 .feed-article-container {
-  flex: 1 1 50%;
+  flex: 1 1 auto;
+  overflow: scroll;
+  text-align: left;
+  padding: 0 20px;
 }
 
 input {
@@ -148,9 +179,29 @@ ul {
   text-align: left;
 }
 
-li {
+li:hover {
+  background: lightgray;
+}
+
+.selected {
+  background: lightgray;
+}
+
+.feed-title-container li {
   display: inline-block;
-  margin: 5px 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.feed-article-list-container li {
+  display: inline-block;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 18px;
 }
 
 a {
