@@ -10,6 +10,9 @@
         >
           {{feed.title}}
         </li>
+        <li>
+          <input placeholder="Enter New Feed URL"/>
+        </li>
       </ul>
     </div>
 
