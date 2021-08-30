@@ -22,7 +22,9 @@
           :key="index"
           :class="{ selected: selectedFeedArticleIndex == index }"
         >
-          {{article.title}}
+          <div class="feed-article-list-item-title"> {{ selectedFeedArticlesTitle }} : {{datediff(article.pubDate)}} </div>
+          <div class="feed-article-list-item-content"> {{article.title}} </div>
+          
         </li>
       </ul>
     </div>
@@ -42,6 +44,7 @@
 import { ref } from "vue";
 import * as RSSParser from "rss-parser";
 import { feedUrls } from '../constants';
+import moment from "moment";
 
 const parser = new RSSParser();
 
@@ -79,6 +82,10 @@ export default {
       return this.feedsData[this.selectedFeedIndex]?.items || [];
     },
 
+    selectedFeedArticlesTitle() {
+      return this.feedsData[this.selectedFeedIndex]?.title || '';
+    },
+
     selectedArticle() {
       return this.selectedFeedArticles[this.selectedFeedArticleIndex] || {};
     }
@@ -112,6 +119,11 @@ export default {
         console.error("ERROR:", e);
       }
       
+    },
+    datediff(date) {
+      const today = moment();
+      const postDate = moment(date);
+      return postDate.from(today);
     }
   }
 }
@@ -150,6 +162,12 @@ export default {
   text-align: left;
   padding: 20px 20px;
   box-sizing: border-box;
+}
+
+.feed-article-list-item-title {
+  font-size: 12px;
+  color: lightslategray;
+  margin-bottom: 5px;
 }
 
 input {
@@ -201,10 +219,11 @@ ul {
 
 .feed-article-list-container li {
   display: inline-block;
-  padding: 8px 10px;
+  padding: 10px 15px;
   cursor: pointer;
-  border-radius: 5px;
   font-size: 18px;
+  border-bottom: 1px solid lightgray;
+  padding: 10px 15px;
 }
 
 a {
