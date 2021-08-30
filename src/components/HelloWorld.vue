@@ -28,9 +28,11 @@
     </div>
     
     <div class="feed-article-container">
-      <h2>{{ selectedArticle.title }} </h2>
-      <span v-html="selectedArticle['content:encoded']"> </span>
-      <span v-html="selectedArticle['content']"> </span>
+      <div>
+        <h2>{{ selectedArticle.title }} </h2>
+        <span v-html="selectedArticle['content:encoded']"> </span>
+        <span v-html="selectedArticle['content']"> </span>
+      </div>
     </div>
   </div>
 </template>
@@ -64,7 +66,7 @@ export default {
 
   data() {
     return {
-      user: 'shai1436',
+      user: 'shaide32',
       feedUrls,
       feedsData: [],
       selectedFeedIndex: 0,
@@ -99,7 +101,8 @@ export default {
     async fetchArticles() {
       try {
         this.feedUrls.forEach(async (feedUrl) => {
-          const url = feedUrl;
+          // a temporary workaround for cors issue
+          const url = 'https://cors-anywhere.herokuapp.com/'+feedUrl;
           let feed = await parser.parseURL(url);
           console.log(feed);
           this.feedsData.push(feed);
@@ -129,25 +132,24 @@ export default {
   -webkit-box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
   -moz-box-shadow: 4px 0px 7px -1px rgba(0,0,0,0.44);
   box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .feed-article-list-container {
   flex: 0 0 30%;
   border-right: 0px solid grey;
-  padding-right: 5px;
   -webkit-box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
   -moz-box-shadow: 4px 0px 7px -1px rgba(0,0,0,0.44);
   box-shadow: 4px 0px 7px -1px rgb(0 0 0 / 44%);
-  overflow: scroll;
-  padding: 0 10px;
+  overflow-y: auto;
 }
 
 .feed-article-container {
   flex: 1 1 auto;
-  overflow: scroll;
+  overflow-y: auto;
   text-align: left;
-  padding: 0 20px;
+  padding: 20px 20px;
+  box-sizing: border-box;
 }
 
 input {
