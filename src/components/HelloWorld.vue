@@ -10,6 +10,9 @@
         >
           {{feed.title}}
         </li>
+        <li>
+          <input class="new-url" placeholder="Enter New Feed URL"/>
+        </li>
       </ul>
     </div>
 
@@ -229,4 +232,12 @@ ul {
 a {
   color: #42b983;
 }
+
+.new-url {
+  width: 180px;
+  font-size: 18px;
+  position: absolute;
+  top: 90%;
+}
+
 </style>
